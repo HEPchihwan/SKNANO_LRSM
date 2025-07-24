@@ -12,7 +12,7 @@ wget --no-verbose https://lhapdf.hepforge.org/downloads/\?f\=LHAPDF-$LHAPDF_VERS
 tar xf LHAPDF-$LHAPDF_VERSION.tar.gz
 cd LHAPDF-$LHAPDF_VERSION
 
-if [ $SKNANO_SYSTEM == "osx" ]; then
+if [ "$SYSTEM" == "osx" ]; then
     ./configure --prefix=$LHAPDF_INSTALL_DIR CXX=clang++
 else
     ./configure --prefix=$LHAPDF_INSTALL_DIR CXX=g++

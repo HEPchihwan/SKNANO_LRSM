@@ -18,3 +18,4 @@
 #pragma link C++ class ParseEleIDVariables+;
 #pragma link C++ class ParseMuIDVariables+;
 #pragma link C++ class TestGetLeptonType+;
+#pragma link C++ class LRSM_TBChannel+;

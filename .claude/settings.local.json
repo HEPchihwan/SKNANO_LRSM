@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(correction:*)",
+      "Bash(python:*)",
+      "Bash(micromamba install:*)",
+      "Bash(ls:*)",
+      "Bash(/data6/Users/achihawn/micromamba/envs/Nano/bin/correction config --cmake)",
+      "Bash(root-config:*)",
+      "Bash(source:*)",
+      "Bash(./scripts/build.sh:*)",
+      "Bash(./scripts/install_lhapdf.sh:*)",
+      "Bash(echo \"CC=$CC\")",
+      "Bash(echo:*)",
+      "Bash(micromamba remove:*)",
+      "Bash(yum search:*)",
+      "Bash(dnf search:*)",
+      "Bash(micromamba search:*)",
+      "Bash(micromamba create:*)",
+      "Bash($CONDA_PREFIX/bin/correction:*)",
+      "Bash(grep:*)",
+      "Bash(export SKNANO_HOME=\"/data6/Users/achihwan/SKNanoAnalyzer\")",
+      "Bash(export:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(cmake:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(/data6/Users/achihwan/SKNanoAnalyzer/build_fixed.sh:*)",
+      "Bash(make:*)",
+      "Bash(./build_fixed.sh)",
+      "Bash(micromamba list:*)",
+      "Bash(SKNano.py --help)",
+      "Bash(SKNano.py:*)",
+      "Bash(rootls -l /gv0/Users/achihwan/SKNanoRunlog/out/LRSM_TBChannel/2022/TTLL_powheg.root)",
+      "Bash(rootls:*)"
+    ],
+    "deny": []
+  }
+}

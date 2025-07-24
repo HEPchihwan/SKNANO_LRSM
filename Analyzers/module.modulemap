@@ -1,0 +1,17 @@
+module "Analyzers" {
+  requires cplusplus
+  module "include/AnalyzerCore.h" { header "include/AnalyzerCore.h" export * }
+  module "include/DiLeptonBase.h" { header "include/DiLeptonBase.h" export * }
+  module "include/ExampleRun.h" { header "include/ExampleRun.h" export * }
+  module "include/FullHadronicTriggerTnP.h" { header "include/FullHadronicTriggerTnP.h" export * }
+  module "include/GeneratorBase.h" { header "include/GeneratorBase.h" export * }
+  module "include/GetEffLumi.h" { header "include/GetEffLumi.h" export * }
+  module "include/MeasureJetTaggingEff.h" { header "include/MeasureJetTaggingEff.h" export * }
+  module "include/ParseEleIDVariables.h" { header "include/ParseEleIDVariables.h" export * }
+  module "include/ParseMuIDVariables.h" { header "include/ParseMuIDVariables.h" export * }
+  module "include/SKNanoLoader.h" { header "include/SKNanoLoader.h" export * }
+  module "include/TestGetLeptonType.h" { header "include/TestGetLeptonType.h" export * }
+  link "libAnalyzers.so"
+  export *
+}
+

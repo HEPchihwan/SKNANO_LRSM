@@ -237,7 +237,8 @@
         "lumi": 8077.009684657
     },
     "HLT_IsoMu30": {
-        "lumi": 8077.009684657
+        "lumi": 8077.009684657,
+        "active": true
     },
     "HLT_UncorrectedJetE30_NoBPTX": {
         "lumi": 8077.009684657

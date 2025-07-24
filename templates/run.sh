@@ -1,8 +1,13 @@
 #!/bin/bash
 export PATH="/opt/conda/bin:${PATH}"
-export MAMBA_ROOT_PREFIX="/opt/conda"
+#export MAMBA_ROOT_PREFIX="/opt/conda"
+export MAMBA_ROOT_PREFIX=/data6/Users/achihawn/micromamba
 eval "$(micromamba shell hook -s bash)"
-micromamba activate Nano
+micromamba activate TestRoot
+
+
+#eval "$(/data6/Users/achihawn/micromamba/bin/micromamba shell hook -s bash)"
+#micromamba activate TestRoot
 
 export SKNANO_HOME=[SKNANO_HOME]
 export SKNANO_DATA=[SKNANO_DATA]

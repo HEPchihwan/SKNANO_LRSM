@@ -25,9 +25,9 @@ fi
 
 # Set up environment
 if [[ $HOSTNAME == *"tamsa"* ]]; then
-    export SKNANO_HOME="/data9/Users/choij/Sync/workspace/SKNanoAnalyzer"
+    export SKNANO_HOME="/data6/Users/achihwan/SKNanoAnalyzer"
     export SKNANO_RUNLOG="/gv0/Users/$USER/SKNanoRunlog"
-    export SKNANO_OUTPUT="/data9/Users/choij/Sync/workspace/SKNanoOutput"
+    export SKNANO_OUTPUT="/gv0/Users/$USER/SKNanoRunlog/out"
 else
     export SKNANO_HOME=`pwd`
     export SKNANO_RUNLOG="$HOME/Sync/workspace/SKNanoRunlog"
@@ -72,13 +72,15 @@ elif [ $PACKAGE = "mamba" ]; then
     if [[ -n "$IS_SINGULARITY" ||  -n "$GITHUB_ACTION" ]]; then
         # Building within Singularity image, will be used for batch jobs
         echo -e "\033[32m@@@@ Detected Singularity environment\033[0m"
+        export PATH="/data6/Users/achihwan/.local/bin:${PATH}"
+        export MAMBA_ROOT_PREFIX="/data6/Users/achihawn/micromamba"
         eval "$(micromamba shell hook -s zsh)"
     else
-        export PATH="$HOME/micromamba/bin:${PATH}"
-        export MAMBA_ROOT_PREFIX="$HOME/micromamba"
+        export PATH="/data6/Users/achihwan/.local/bin:${PATH}"
+        export MAMBA_ROOT_PREFIX="/data6/Users/achihawn/micromamba"
         eval "$(micromamba shell hook -s zsh)"
     fi
-    micromamba activate Nano
+    micromamba activate TestRoot
     # from this point on, we can follow conda version of setup
     PACKAGE="conda"
     alias conda="micromamba"
@@ -103,6 +105,12 @@ export SKNANO_INSTALLDIR=$SKNANO_HOME/install/$SYSTEM
 export PATH=$SKNANO_PYTHON:$PATH
 export PYTHONPATH=$PYTHONPATH:$SKNANO_PYTHON
 export SKNANO_LIB=$SKNANO_INSTALLDIR/lib
+
+# Try to work around compiler ABI issues
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
+export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=1"
+export CMAKE_CXX_STANDARD=17
 export SKNANO_RUN3_NANOAODPATH="/gv0/DATA/SKNano/Run3NanoAODv13p1"
 export SKNANO_RUN2_NANOAODPATH="/gv0/DATA/SKNano/Run2NanoAODv9p1"
 
@@ -145,7 +153,7 @@ export LIBTORCH_LIB_DIR=$SKNANO_HOME/external/libtorch/lib
 export LIBTORCH_INSTALL_DIR=$SKNANO_HOME/external/libtorch
 
 # env for correctionlib
-CORRECTIONLIBS=$(conda list | grep "correctionlib")
+CORRECTIONLIBS=$(micromamba list | grep "correctionlib")
 if [ -z "$CORRECTIONLIBS" ]; then
     echo -e "\033[31m@@@@ correctionlib not found in conda environment\033[0m"
     echo -e "\033[31m@@@@ Please install correctionlib in conda environment\033[0m"
@@ -222,7 +230,7 @@ check_jsonpog_updates() {
 check_jsonpog_updates false
 
 # env for onnxruntime
-ONNXRUNTIME=$(conda list | grep "onnxruntime")
+ONNXRUNTIME=$(micromamba list | grep "onnxruntime")
 if [ -z "$ONNXRUNTIME" ]; then
     echo -e "\033[31m@@@@ onnxruntime not found in conda environment\033[0m"
     echo -e "\033[31m@@@@ Please install onnxruntime in conda environment\033[0m"

@@ -21,7 +21,7 @@ elif args.era == "2018":
     BASEPATH = os.environ["SKNANO_RUN2_NANOAODPATH"]
 elif args.era == "2022":
     YEAR = "2022"
-    BASEPATH = os.environ["SKNANO_RUN3_NANOAODPATH"]
+    BASEPATH = "/gv0/Users/achihwan/SKNano/Run3NanoAODv13p1"
 elif args.era == "2022EE":
     YEAR = "2022"
     BASEPATH = os.environ["SKNANO_RUN3_NANOAODPATH"]
