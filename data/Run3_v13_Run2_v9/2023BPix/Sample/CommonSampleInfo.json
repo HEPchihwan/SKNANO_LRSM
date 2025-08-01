@@ -1,10 +1,9 @@
 {
-    
-"TBChannel_WR1000N700": {
+    "TBChannel_WR1000N700": {
         "name": "TBChannel_WR1000N700",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-1000_MN-700_13p6TeV",
-        "xsec": 194.6,
+        "xsec": 0.1946,
         "nmc": 50500.0,
         "sumsign": 50500.0,
         "sumW": 50500.0
@@ -13,7 +12,7 @@
         "name": "TBChannel_WR3000N1300",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-3000_MN-1300_13p6TeV",
-        "xsec": 1.826,
+        "xsec": 0.001826,
         "nmc": 55500.0,
         "sumsign": 55500.0,
         "sumW": 55500.0
@@ -22,7 +21,7 @@
         "name": "TBChannel_WR3000N2100",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-3000_MN-2100_13p6TeV",
-        "xsec": 0.9088,
+        "xsec": 0.0009088,
         "nmc": 59000.0,
         "sumsign": 59000.0,
         "sumW": 59000.0
@@ -31,7 +30,7 @@
         "name": "TBChannel_WR3000N2900",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-3000_MN-2900_13p6TeV",
-        "xsec": 0.02982,
+        "xsec": 0.00002982,
         "nmc": 60000.0,
         "sumsign": 60000.0,
         "sumW": 60000.0
@@ -40,7 +39,7 @@
         "name": "TBChannel_WR5000N2500",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-5000_MN-2500_13p6TeV",
-        "xsec": 0.03599,
+        "xsec": 0.00003599,
         "nmc": 57000.0,
         "sumsign": 57000.0,
         "sumW": 57000.0
@@ -49,7 +48,7 @@
         "name": "TBChannel_WR5000N3300",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-5000_MN-3300_13p6TeV",
-        "xsec": 0.02216,
+        "xsec": 0.00002216,
         "nmc": 44000.0,
         "sumsign": 44000.0,
         "sumW": 44000.0
@@ -58,7 +57,7 @@
         "name": "TBChannel_WR5000N4100",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-5000_MN-4100_13p6TeV",
-        "xsec": 0.008305,
+        "xsec": 0.000008305,
         "nmc": 36500.0,
         "sumsign": 36500.0,
         "sumW": 36500.0
@@ -67,7 +66,7 @@
         "name": "TBChannel_WR5000N4900",
         "isMC": 1,
         "PD": "WRtoNMutoMuMuTB-HadTop_MWR-5000_MN-4900_13p6TeV",
-        "xsec": 0.0003436,
+        "xsec": 0.0000003436,
         "nmc": 40000.0,
         "sumsign": 40000.0,
         "sumW": 40000.0

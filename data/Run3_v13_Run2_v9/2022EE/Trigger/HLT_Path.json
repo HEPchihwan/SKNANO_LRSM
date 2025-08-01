@@ -205,12 +205,14 @@
     },
     "HLT_IsoMu24": {
         "lumi": 26671.609707229
+        ,"active": true
     },
     "HLT_IsoMu24_eta2p1": {
         "lumi": 26671.609707229
     },
     "HLT_IsoMu27": {
         "lumi": 26671.609707229
+        ,"active": true
     },
     "HLT_UncorrectedJetE30_NoBPTX": {
         "lumi": 26671.609707229

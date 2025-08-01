@@ -1,17 +1,17 @@
-#include "LRSM_TBChannel.h"
+#include "LRSM_TBChannel_2AK8.h"
 
-LRSM_TBChannel::LRSM_TBChannel() {}
-LRSM_TBChannel::~LRSM_TBChannel() {}
+LRSM_TBChannel_2AK8::LRSM_TBChannel_2AK8() {}
+LRSM_TBChannel_2AK8::~LRSM_TBChannel_2AK8() {}
 
-void LRSM_TBChannel::initializeAnalyzer() {
-    cout << "[LRSM_TBChannel::initializeAnalyzer] Starting initialization" << endl;
+void LRSM_TBChannel_2AK8::initializeAnalyzer() {
+    cout << "[LRSM_TBChannel_2AK8::initializeAnalyzer] Starting initialization" << endl;
     
     // Check user flags
     RunSyst = HasFlag("RunSyst");
     RunWRCut = HasFlag("RunWRCut");
     
-    cout << "[LRSM_TBChannel::initializeAnalyzer] RunSyst = " << RunSyst << endl;
-    cout << "[LRSM_TBChannel::initializeAnalyzer] RunWRCut = " << RunWRCut << endl;
+    cout << "[LRSM_TBChannel_2AK8::initializeAnalyzer] RunSyst = " << RunSyst << endl;
+    cout << "[LRSM_TBChannel_2AK8::initializeAnalyzer] RunWRCut = " << RunWRCut << endl;
     
     // Set WR mass cut threshold
     if (RunWRCut) {
@@ -30,8 +30,8 @@ void LRSM_TBChannel::initializeAnalyzer() {
     
     // Era-dependent trigger settings
     if (DataEra == "2016preVFP" || DataEra == "2016postVFP" || DataEra == "2018") {
-        IsoMuTriggerName = "HLT_IsoMu27";
-        TriggerSafePtCut = 29.;
+        IsoMuTriggerName = "HLT_IsoMu24";
+        TriggerSafePtCut = 26.;
     } else if (DataEra == "2017") {
         IsoMuTriggerName = "HLT_IsoMu27"; 
         TriggerSafePtCut = 29.;
@@ -39,21 +39,21 @@ void LRSM_TBChannel::initializeAnalyzer() {
         IsoMuTriggerName = "HLT_IsoMu30";
         TriggerSafePtCut = 32.;
     } else if (DataEra == "2022EE") {
-        IsoMuTriggerName = "HLT_IsoMu30";
-        TriggerSafePtCut = 32.;
+        IsoMuTriggerName = "HLT_IsoMu27";
+        TriggerSafePtCut = 29.;
     } else if (DataEra == "2023") {
         IsoMuTriggerName = "HLT_IsoMu30";
         TriggerSafePtCut = 32.;
     } else if (DataEra == "2023BPix") {
         IsoMuTriggerName = "HLT_IsoMu30";
-        TriggerSafePtCut = 32.; 
+        TriggerSafePtCut = 32.;
     } else {
-        cerr << "[LRSM_TBChannel::initializeAnalyzer] DataEra is not set properly: " << DataEra << endl;
+        cerr << "[LRSM_TBChannel_2AK8::initializeAnalyzer] DataEra is not set properly: " << DataEra << endl;
         exit(EXIT_FAILURE);
     }
     
-    cout << "[LRSM_TBChannel::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
-    cout << "[LRSM_TBChannel::initializeAnalyzer] TriggerSafePtCut = " << TriggerSafePtCut << endl;
+    cout << "[LRSM_TBChannel_2AK8::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
+    cout << "[LRSM_TBChannel_2AK8::initializeAnalyzer] TriggerSafePtCut = " << TriggerSafePtCut << endl;
     
     // Initialize corrections
     myCorr = new MyCorrection(DataEra, IsDATA ? DataStream : MCSample, IsDATA);
@@ -66,13 +66,12 @@ void LRSM_TBChannel::initializeAnalyzer() {
         systHelper = std::make_unique<SystematicHelper>(SKNANO_HOME + "/docs/ExampleSystematic.yaml", MCSample);
     }
     
-    cout << "[LRSM_TBChannel::initializeAnalyzer] Initialization complete" << endl;
+    cout << "[LRSM_TBChannel_2AK8::initializeAnalyzer] Initialization complete" << endl;
 }
 
-void LRSM_TBChannel::executeEvent() {
+void LRSM_TBChannel_2AK8::executeEvent() {
     // Get all physics objects at the beginning to save CPU time
     AllMuons = GetAllMuons();
-    AllJets = GetAllJets();
     AllFatJets = GetAllFatJets();
     
     
@@ -83,7 +82,7 @@ void LRSM_TBChannel::executeEvent() {
     }
 }
 
-void LRSM_TBChannel::executeEventFromParameter() {
+void LRSM_TBChannel_2AK8::executeEventFromParameter() {
     const TString this_syst = systHelper->getCurrentSysName();
     
     // Get event information
@@ -96,7 +95,6 @@ void LRSM_TBChannel::executeEventFromParameter() {
     
     // Copy physics objects for systematic variations
     RVec<Muon> muons = AllMuons;
-    RVec<Jet> jets = AllJets;
     RVec<FatJet> fatjets = AllFatJets;
     
     // Apply muon selection
@@ -159,13 +157,12 @@ void LRSM_TBChannel::executeEventFromParameter() {
     RVec<FatJet> leading_topjet = {topjets[0]};
     FillHist(this_syst + "/CutFlow", 5.0, 1.0, 10, 0., 10.);
     // Remove overlap between jets and fat jets
-    jets = SelectJets(jets, JetIDs[0], cuts.jet_pt, cuts.jet_eta);
+    RVec<FatJet> jets = fatjets;
     jets = RemoveOverlapWithMuons(jets, muon_overlap_cleaned);
     jets = RemoveOverlapWithFatJets(jets, leading_topjet);
-    RVec<Jet> bjets = SelectBTaggedJets(jets);
-    sort(bjets.begin(), bjets.end(), PtComparing);
-    if (bjets.size() < 1 ) return;
-    RVec<Jet> leading_bjet = {bjets[0]};
+    sort(jets.begin(), jets.end(), PtComparing);
+    if (jets.size() < 1 ) return;
+    RVec<FatJet> leading_bjet = {jets[0]};
 
     FillHist(this_syst + "/CutFlow", 6.0, 1.0, 10, 0., 10.); // b-jet and top-jet
     
@@ -221,17 +218,9 @@ void LRSM_TBChannel::executeEventFromParameter() {
 
 
 
-RVec<Jet> LRSM_TBChannel::SelectBTaggedJets(const RVec<Jet>& jets) {
-    RVec<Jet> btagged_jets;
-    for (const auto& jet : jets) {
-        if (jet.GetBTaggerResult(JetTagging::JetFlavTagger::ParticleNet) > cuts.btag_wp) {
-            btagged_jets.push_back(jet); 
-        }
-    }
-    return btagged_jets;
-}
 
-RVec<FatJet> LRSM_TBChannel::SelectTopTaggedJets(const RVec<FatJet>& fatjets) {
+
+RVec<FatJet> LRSM_TBChannel_2AK8::SelectTopTaggedJets(const RVec<FatJet>& fatjets) {
     RVec<FatJet> toptagged_jets;
     for (const auto& fatjet : fatjets) {
         // Using basic mass cuts for top tagging - update with actual tagger when available
@@ -247,7 +236,7 @@ RVec<FatJet> LRSM_TBChannel::SelectTopTaggedJets(const RVec<FatJet>& fatjets) {
     return toptagged_jets;
 }
 
-RVec<Muon> LRSM_TBChannel::RemoveOverlap(const RVec<Muon>& muons, float deltaR_cut) {
+RVec<Muon> LRSM_TBChannel_2AK8::RemoveOverlap(const RVec<Muon>& muons, float deltaR_cut) {
     RVec<Muon> cleaned_muons;
     for (size_t i = 0; i < muons.size(); ++i) {
         bool overlaps = false;
@@ -264,8 +253,8 @@ RVec<Muon> LRSM_TBChannel::RemoveOverlap(const RVec<Muon>& muons, float deltaR_c
     return cleaned_muons;
 }
 
-RVec<Jet> LRSM_TBChannel::RemoveOverlapWithMuons(const RVec<Jet>& jets, const RVec<Muon>& muons, float deltaR_cut) {
-    RVec<Jet> cleaned_jets;
+RVec<FatJet> LRSM_TBChannel_2AK8::RemoveOverlapWithMuons(const RVec<FatJet>& jets, const RVec<Muon>& muons, float deltaR_cut) {
+    RVec<FatJet> cleaned_jets;
     for (const auto& jet : jets) {
         bool overlaps = false;
         for (const auto& muon : muons) {
@@ -281,8 +270,8 @@ RVec<Jet> LRSM_TBChannel::RemoveOverlapWithMuons(const RVec<Jet>& jets, const RV
     return cleaned_jets;
 }
 
-RVec<Jet> LRSM_TBChannel::RemoveOverlapWithFatJets(const RVec<Jet>& jets, const RVec<FatJet>& fatjets, float deltaR_cut) {
-    RVec<Jet> cleaned_jets;
+RVec<FatJet> LRSM_TBChannel_2AK8::RemoveOverlapWithFatJets(const RVec<FatJet>& jets, const RVec<FatJet>& fatjets, float deltaR_cut) {
+    RVec<FatJet> cleaned_jets;
     for (const auto& jet : jets) {
         bool overlaps = false;
         for (const auto& fatjet : fatjets) {
@@ -298,7 +287,7 @@ RVec<Jet> LRSM_TBChannel::RemoveOverlapWithFatJets(const RVec<Jet>& jets, const 
     return cleaned_jets;
 }
 
-RVec<FatJet> LRSM_TBChannel::RemoveOverlapWithMuonsFatJet(const RVec<FatJet>& fatjets, const RVec<Muon>& muons, float deltaR_cut) {
+RVec<FatJet> LRSM_TBChannel_2AK8::RemoveOverlapWithMuonsFatJet(const RVec<FatJet>& fatjets, const RVec<Muon>& muons, float deltaR_cut) {
     RVec<FatJet> cleaned_fatjets;
     for (const auto& fatjet : fatjets) {
         bool overlaps = false;
@@ -315,7 +304,7 @@ RVec<FatJet> LRSM_TBChannel::RemoveOverlapWithMuonsFatJet(const RVec<FatJet>& fa
     return cleaned_fatjets;
 }
 
-bool LRSM_TBChannel::PassKinematicCuts(const RVec<Muon>& muons) {
+bool LRSM_TBChannel_2AK8::PassKinematicCuts(const RVec<Muon>& muons) {
     if (muons.size() < 2) return false;
     
     // Leading muon pT cut
@@ -329,14 +318,14 @@ bool LRSM_TBChannel::PassKinematicCuts(const RVec<Muon>& muons) {
     return true;
 }
 
-bool LRSM_TBChannel::PassDileptonMassCut(const RVec<Muon>& muons) {
+bool LRSM_TBChannel_2AK8::PassDileptonMassCut(const RVec<Muon>& muons) {
     if (muons.size() < 2) return false;
     
     float dilepton_mass = (muons[0] + muons[1]).M();
     return dilepton_mass > cuts.dilepton_mass_cut;
 }
 
-float LRSM_TBChannel::CalculateWRMass(const RVec<Muon>& muons, const RVec<Jet>& bjets, const RVec<FatJet>& topjets) {
+float LRSM_TBChannel_2AK8::CalculateWRMass(const RVec<Muon>& muons, const RVec<FatJet>& bjets, const RVec<FatJet>& topjets) {
     if (muons.size() < 2 || bjets.size() < 1 || topjets.size() < 1) return -1.0;
     
     Particle wr_candidate = muons[0] + muons[1] + bjets[0] + topjets[0];
