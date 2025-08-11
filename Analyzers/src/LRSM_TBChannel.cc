@@ -22,7 +22,17 @@ void LRSM_TBChannel::initializeAnalyzer() {
     
     // Muon IDs and scale factor keys
     MuonIDs.clear();
-    MuonIDs.push_back(Muon::MuonID::POG_TIGHT);
+    // Use more reasonable muon IDs for standard analysis
+    // POG_GLOBAL_HIGH_PT is very restrictive (for >200 GeV muons)
+    // For LRSM analysis, use Tight ID + isolation
+    // Your data has HighPtId=1, so use POG_TRACKER_HIGH_PT instead of POG_GLOBAL_HIGH_PT
+    MuonIDs.push_back(Muon::MuonID::POG_GLOBAL_HIGH_PT);  // This matches your data (HighPtId=2)
+    MuonIDs.push_back(Muon::MuonID::POG_TKISO_TIGHT);      // TkIsoId=2
+    
+    // Alternative: Use standard IDs if high-pT selection isn't critical
+    // MuonIDs.push_back(Muon::MuonID::POG_TIGHT);
+    // MuonIDs.push_back(Muon::MuonID::POG_PFISO_TIGHT);
+    
     MuonIDSFKeys = {"NUM_TightID_DEN_TrackerMuons"};
     
     // Jet IDs
@@ -36,23 +46,31 @@ void LRSM_TBChannel::initializeAnalyzer() {
         IsoMuTriggerName = "HLT_IsoMu27"; 
         TriggerSafePtCut = 29.;
     } else if (DataEra == "2022") {
-        IsoMuTriggerName = "HLT_IsoMu30";
-        TriggerSafePtCut = 32.;
+        Trigger1  = "HLT_Mu50";
+        Trigger2  = "HLT_CascadeMu100";
+        Trigger3  = "HLT_HighPtTkMu100";
+        TriggerSafePtCut = 52.;
     } else if (DataEra == "2022EE") {
-        IsoMuTriggerName = "HLT_IsoMu30";
-        TriggerSafePtCut = 32.;
+        Trigger1  = "HLT_Mu50";
+        Trigger2  = "HLT_CascadeMu100";
+        Trigger3  = "HLT_HighPtTkMu100";
+        TriggerSafePtCut = 52.;
     } else if (DataEra == "2023") {
-        IsoMuTriggerName = "HLT_IsoMu30";
-        TriggerSafePtCut = 32.;
+        Trigger1  = "HLT_Mu50";
+        Trigger2  = "HLT_CascadeMu100";
+        Trigger3  = "HLT_HighPtTkMu100";
+        TriggerSafePtCut = 52.;
     } else if (DataEra == "2023BPix") {
-        IsoMuTriggerName = "HLT_IsoMu30";
-        TriggerSafePtCut = 32.; 
+        Trigger1  = "HLT_Mu50";
+        Trigger2  = "HLT_CascadeMu100";
+        Trigger3  = "HLT_HighPtTkMu100";
+        TriggerSafePtCut = 52.;
     } else {
         cerr << "[LRSM_TBChannel::initializeAnalyzer] DataEra is not set properly: " << DataEra << endl;
         exit(EXIT_FAILURE);
     }
     
-    cout << "[LRSM_TBChannel::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
+    //cout << "[LRSM_TBChannel::initializeAnalyzer] IsoMuTriggerName = " << IsoMuTriggerName << endl;
     cout << "[LRSM_TBChannel::initializeAnalyzer] TriggerSafePtCut = " << TriggerSafePtCut << endl;
     
     // Initialize corrections
@@ -90,7 +108,7 @@ void LRSM_TBChannel::executeEventFromParameter() {
     Event ev = GetEvent();
     FillHist(this_syst + "/CutFlow", 0.0, 1.0, 10, 0., 10.); // Initial event
     // Apply HLT trigger
-    if (!ev.PassTrigger(IsoMuTriggerName)) return;
+    if (!(ev.PassTrigger(Trigger1)||ev.PassTrigger(Trigger2)||ev.PassTrigger(Trigger3))) return;
     
     FillHist(this_syst + "/CutFlow", 1.0, 1.0, 10, 0., 10.); // HLT pass
     
@@ -98,15 +116,34 @@ void LRSM_TBChannel::executeEventFromParameter() {
     RVec<Muon> muons = AllMuons;
     RVec<Jet> jets = AllJets;
     RVec<FatJet> fatjets = AllFatJets;
+
+    // Muon Id pass 
+    bool hasGoodMuon = false;
     
+    for (const auto& muon : muons) {
+        // Debug output to see actual ID values
+        FillHist(this_syst + "/MuonhighPtid",muon.PassID(MuonIDs[0]), 1.0, 10, -5., 5.);
+        FillHist(this_syst + "/Muonisoid",muon.PassID(MuonIDs[1]), 1.0, 10, -5., 5.);
+        
+        // Fill additional histograms to understand what IDs are available
+        FillHist(this_syst + "/Muon_HighPtId", (int)muon.HighPtId(), 1.0,  10, -5., 5.);
+        FillHist(this_syst + "/Muon_TkIsoId", (int)muon.TkIsoId(), 1.0,  10, -5., 5.);
+        FillHist(this_syst + "/Muon_TightId", muon.isPOGTightId(), 1.0, 3, 0., 3.);
+        FillHist(this_syst + "/Muon_MediumId", muon.isPOGMediumId(), 1.0, 3, 0., 3.);
+        FillHist(this_syst + "/Muon_LooseId", muon.isPOGLooseId(), 1.0, 3, 0., 3.);
+        
+        if (muon.PassID(MuonIDs[1]) and muon.PassID(MuonIDs[0]) ) {
+            hasGoodMuon = true;
+            break;
+        }
+    }   
+    if (!hasGoodMuon) return;
+
     // Apply muon selection
-    
+    FillHist(this_syst + "/CutFlow", 2.0, 1.0, 10, 0., 10.); // 2 muons
     muons = RemoveOverlap(muons);
-    
     // Require more than 2 muons
     if (muons.size() < 2) return;
-    
-    FillHist(this_syst + "/CutFlow", 2.0, 1.0, 10, 0., 10.); // 2 muons
     
     // Sort muons by pT
     sort(muons.begin(), muons.end(), PtComparing);

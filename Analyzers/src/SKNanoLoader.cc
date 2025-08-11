@@ -825,6 +825,7 @@ void SKNanoLoader::Init() {
     SafeSetBranchAddress("Muon_softMva", Muon_softMva.data());
     SafeSetBranchAddress("Muon_softMvaId", Muon_softMvaId.data());
     SafeSetBranchAddress("Muon_tightId", Muon_tightId.data());
+    SafeSetBranchAddress("Muon_highPtId", Muon_highPtId.data());
     SafeSetBranchAddress("Muon_tkIsoId", Muon_tkIsoId.data());
     SafeSetBranchAddress("Muon_tkRelIso", Muon_tkRelIso.data());
     SafeSetBranchAddress("Muon_triggerIdLoose", Muon_triggerIdLoose.data());

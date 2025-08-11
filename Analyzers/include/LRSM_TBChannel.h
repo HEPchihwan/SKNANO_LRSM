@@ -27,6 +27,9 @@ public:
     
     // Trigger settings
     TString IsoMuTriggerName;
+    TString Trigger1;
+    TString Trigger2;
+    TString Trigger3;
     float TriggerSafePtCut;
     
     // Object ID settings
@@ -43,12 +46,12 @@ public:
     RVec<Muon> muon_overlap_cleaned;
     // Analysis cuts
     struct AnalysisCuts {
-        float muon_pt = 30.0;
+        float muon_pt = 50.0;
         float muon_eta = 2.4;
         float muon_iso = 0.15;
         float jet_pt = 30.0;
-        float jet_eta = 2.4;
-        float fatjet_pt = 0.0;
+        float jet_eta = 2.5;
+        float fatjet_pt = 30.0;
         float fatjet_eta = 2.5;
         float btag_wp = 0.6734; // ParticleNet medium WP
         float toptag_score = 0.9;
